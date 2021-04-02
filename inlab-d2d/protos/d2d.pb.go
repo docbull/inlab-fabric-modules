@@ -7,6 +7,10 @@
 package d2d
 
 import (
+	context "context"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -269,10 +273,11 @@ var file_d2d_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x44, 0x32, 0x44, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x30, 0x0a, 0x0e,
 	0x44, 0x32, 0x44, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x0e,
 	0x2e, 0x70, 0x65, 0x65, 0x72, 0x2e, 0x45, 0x6e, 0x76, 0x65, 0x6c, 0x6f, 0x70, 0x65, 0x1a, 0x0c,
-	0x2e, 0x70, 0x65, 0x65, 0x72, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x42, 0x21,
-	0x5a, 0x1f, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69, 0x6e, 0x6c,
-	0x61, 0x62, 0x2d, 0x64, 0x32, 0x64, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x64, 0x32,
-	0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x70, 0x65, 0x65, 0x72, 0x2e, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x00, 0x42, 0x29,
+	0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x6f, 0x63,
+	0x62, 0x75, 0x6c, 0x6c, 0x2f, 0x69, 0x6e, 0x6c, 0x61, 0x62, 0x2d, 0x64, 0x32, 0x64, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x64, 0x32, 0x64, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -369,4 +374,84 @@ func file_d2d_proto_init() {
 	file_d2d_proto_rawDesc = nil
 	file_d2d_proto_goTypes = nil
 	file_d2d_proto_depIdxs = nil
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// D2DServiceClient is the client API for D2DService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type D2DServiceClient interface {
+	D2DBlockStream(ctx context.Context, in *Envelope, opts ...grpc.CallOption) (*Status, error)
+}
+
+type d2DServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewD2DServiceClient(cc grpc.ClientConnInterface) D2DServiceClient {
+	return &d2DServiceClient{cc}
+}
+
+func (c *d2DServiceClient) D2DBlockStream(ctx context.Context, in *Envelope, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
+	err := c.cc.Invoke(ctx, "/peer.D2DService/D2DBlockStream", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// D2DServiceServer is the server API for D2DService service.
+type D2DServiceServer interface {
+	D2DBlockStream(context.Context, *Envelope) (*Status, error)
+}
+
+// UnimplementedD2DServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedD2DServiceServer struct {
+}
+
+func (*UnimplementedD2DServiceServer) D2DBlockStream(context.Context, *Envelope) (*Status, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method D2DBlockStream not implemented")
+}
+
+func RegisterD2DServiceServer(s *grpc.Server, srv D2DServiceServer) {
+	s.RegisterService(&_D2DService_serviceDesc, srv)
+}
+
+func _D2DService_D2DBlockStream_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Envelope)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(D2DServiceServer).D2DBlockStream(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/peer.D2DService/D2DBlockStream",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(D2DServiceServer).D2DBlockStream(ctx, req.(*Envelope))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _D2DService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "peer.D2DService",
+	HandlerType: (*D2DServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "D2DBlockStream",
+			Handler:    _D2DService_D2DBlockStream_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "d2d.proto",
 }
