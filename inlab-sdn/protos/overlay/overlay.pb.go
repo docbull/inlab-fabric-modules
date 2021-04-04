@@ -24,6 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// ----------- Overlay structure part -----------
 type PeerEndpoint struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -71,13 +72,14 @@ func (x *PeerEndpoint) GetEndpoint() string {
 	return ""
 }
 
+// Not to send all members
 type OverlayStructure struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Endpoint string   `protobuf:"bytes,1,opt,name=Endpoint,proto3" json:"Endpoint,omitempty"`
-	SubPeers []string `protobuf:"bytes,2,rep,name=SubPeers,proto3" json:"SubPeers,omitempty"`
+	Endpoint        *PeerEndpoint   `protobuf:"bytes,1,opt,name=Endpoint,proto3" json:"Endpoint,omitempty"`               // own Endpoint
+	SubPeerEndpoint []*PeerEndpoint `protobuf:"bytes,2,rep,name=SubPeerEndpoint,proto3" json:"SubPeerEndpoint,omitempty"` // Endpoints who need to send the block
 }
 
 func (x *OverlayStructure) Reset() {
@@ -112,16 +114,16 @@ func (*OverlayStructure) Descriptor() ([]byte, []int) {
 	return file_overlay_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *OverlayStructure) GetEndpoint() string {
+func (x *OverlayStructure) GetEndpoint() *PeerEndpoint {
 	if x != nil {
 		return x.Endpoint
 	}
-	return ""
+	return nil
 }
 
-func (x *OverlayStructure) GetSubPeers() []string {
+func (x *OverlayStructure) GetSubPeerEndpoint() []*PeerEndpoint {
 	if x != nil {
-		return x.SubPeers
+		return x.SubPeerEndpoint
 	}
 	return nil
 }
@@ -133,20 +135,23 @@ var file_overlay_proto_rawDesc = []byte{
 	0x07, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x22, 0x2a, 0x0a, 0x0c, 0x50, 0x65, 0x65, 0x72,
 	0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x45, 0x6e, 0x64, 0x70,
 	0x6f, 0x69, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x45, 0x6e, 0x64, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x22, 0x4a, 0x0a, 0x10, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53,
-	0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x45, 0x6e, 0x64, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x45, 0x6e, 0x64, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x53, 0x75, 0x62, 0x50, 0x65, 0x65, 0x72, 0x73,
-	0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x53, 0x75, 0x62, 0x50, 0x65, 0x65, 0x72, 0x73,
-	0x32, 0x64, 0x0a, 0x17, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x72, 0x75, 0x63,
-	0x74, 0x75, 0x72, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x49, 0x0a, 0x13, 0x53,
-	0x65, 0x65, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75,
-	0x72, 0x65, 0x12, 0x15, 0x2e, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x2e, 0x50, 0x65, 0x65,
-	0x72, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x76, 0x65, 0x72,
-	0x6c, 0x61, 0x79, 0x2e, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x72, 0x75, 0x63,
-	0x74, 0x75, 0x72, 0x65, 0x22, 0x00, 0x42, 0x1a, 0x5a, 0x18, 0x69, 0x6e, 0x6c, 0x61, 0x62, 0x2d,
-	0x73, 0x64, 0x6e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2f, 0x6f, 0x76, 0x65, 0x72, 0x6c,
-	0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x69, 0x6e, 0x74, 0x22, 0x86, 0x01, 0x0a, 0x10, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79,
+	0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x12, 0x31, 0x0a, 0x08, 0x45, 0x6e, 0x64,
+	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6f, 0x76,
+	0x65, 0x72, 0x6c, 0x61, 0x79, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x52, 0x08, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x3f, 0x0a, 0x0f,
+	0x53, 0x75, 0x62, 0x50, 0x65, 0x65, 0x72, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x18,
+	0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x2e,
+	0x50, 0x65, 0x65, 0x72, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x52, 0x0f, 0x53, 0x75,
+	0x62, 0x50, 0x65, 0x65, 0x72, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x32, 0x52, 0x0a,
+	0x0e, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12,
+	0x40, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x4f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x12, 0x15, 0x2e,
+	0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x2e, 0x50, 0x65, 0x65, 0x72, 0x45, 0x6e, 0x64, 0x70,
+	0x6f, 0x69, 0x6e, 0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x2e, 0x4f,
+	0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x75, 0x72, 0x65, 0x22,
+	0x00, 0x42, 0x25, 0x5a, 0x23, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x69, 0x6e, 0x6c, 0x61, 0x62, 0x2d, 0x53, 0x44, 0x4e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73,
+	0x2f, 0x6f, 0x76, 0x65, 0x72, 0x6c, 0x61, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -167,13 +172,15 @@ var file_overlay_proto_goTypes = []interface{}{
 	(*OverlayStructure)(nil), // 1: overlay.OverlayStructure
 }
 var file_overlay_proto_depIdxs = []int32{
-	0, // 0: overlay.OverlayStructureService.SeeOverlayStructure:input_type -> overlay.PeerEndpoint
-	1, // 1: overlay.OverlayStructureService.SeeOverlayStructure:output_type -> overlay.OverlayStructure
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: overlay.OverlayStructure.Endpoint:type_name -> overlay.PeerEndpoint
+	0, // 1: overlay.OverlayStructure.SubPeerEndpoint:type_name -> overlay.PeerEndpoint
+	0, // 2: overlay.OverlayService.GetOverlay:input_type -> overlay.PeerEndpoint
+	1, // 3: overlay.OverlayService.GetOverlay:output_type -> overlay.OverlayStructure
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_overlay_proto_init() }
@@ -235,72 +242,74 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// OverlayStructureServiceClient is the client API for OverlayStructureService service.
+// OverlayServiceClient is the client API for OverlayService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type OverlayStructureServiceClient interface {
-	SeeOverlayStructure(ctx context.Context, in *PeerEndpoint, opts ...grpc.CallOption) (*OverlayStructure, error)
+type OverlayServiceClient interface {
+	// GetOverlay(); It returns own sub peers
+	GetOverlay(ctx context.Context, in *PeerEndpoint, opts ...grpc.CallOption) (*OverlayStructure, error)
 }
 
-type overlayStructureServiceClient struct {
+type overlayServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewOverlayStructureServiceClient(cc grpc.ClientConnInterface) OverlayStructureServiceClient {
-	return &overlayStructureServiceClient{cc}
+func NewOverlayServiceClient(cc grpc.ClientConnInterface) OverlayServiceClient {
+	return &overlayServiceClient{cc}
 }
 
-func (c *overlayStructureServiceClient) SeeOverlayStructure(ctx context.Context, in *PeerEndpoint, opts ...grpc.CallOption) (*OverlayStructure, error) {
+func (c *overlayServiceClient) GetOverlay(ctx context.Context, in *PeerEndpoint, opts ...grpc.CallOption) (*OverlayStructure, error) {
 	out := new(OverlayStructure)
-	err := c.cc.Invoke(ctx, "/overlay.OverlayStructureService/SeeOverlayStructure", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/overlay.OverlayService/GetOverlay", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// OverlayStructureServiceServer is the server API for OverlayStructureService service.
-type OverlayStructureServiceServer interface {
-	SeeOverlayStructure(context.Context, *PeerEndpoint) (*OverlayStructure, error)
+// OverlayServiceServer is the server API for OverlayService service.
+type OverlayServiceServer interface {
+	// GetOverlay(); It returns own sub peers
+	GetOverlay(context.Context, *PeerEndpoint) (*OverlayStructure, error)
 }
 
-// UnimplementedOverlayStructureServiceServer can be embedded to have forward compatible implementations.
-type UnimplementedOverlayStructureServiceServer struct {
+// UnimplementedOverlayServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedOverlayServiceServer struct {
 }
 
-func (*UnimplementedOverlayStructureServiceServer) SeeOverlayStructure(context.Context, *PeerEndpoint) (*OverlayStructure, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SeeOverlayStructure not implemented")
+func (*UnimplementedOverlayServiceServer) GetOverlay(context.Context, *PeerEndpoint) (*OverlayStructure, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOverlay not implemented")
 }
 
-func RegisterOverlayStructureServiceServer(s *grpc.Server, srv OverlayStructureServiceServer) {
-	s.RegisterService(&_OverlayStructureService_serviceDesc, srv)
+func RegisterOverlayServiceServer(s *grpc.Server, srv OverlayServiceServer) {
+	s.RegisterService(&_OverlayService_serviceDesc, srv)
 }
 
-func _OverlayStructureService_SeeOverlayStructure_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _OverlayService_GetOverlay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PeerEndpoint)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OverlayStructureServiceServer).SeeOverlayStructure(ctx, in)
+		return srv.(OverlayServiceServer).GetOverlay(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/overlay.OverlayStructureService/SeeOverlayStructure",
+		FullMethod: "/overlay.OverlayService/GetOverlay",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OverlayStructureServiceServer).SeeOverlayStructure(ctx, req.(*PeerEndpoint))
+		return srv.(OverlayServiceServer).GetOverlay(ctx, req.(*PeerEndpoint))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _OverlayStructureService_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "overlay.OverlayStructureService",
-	HandlerType: (*OverlayStructureServiceServer)(nil),
+var _OverlayService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "overlay.OverlayService",
+	HandlerType: (*OverlayServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SeeOverlayStructure",
-			Handler:    _OverlayStructureService_SeeOverlayStructure_Handler,
+			MethodName: "GetOverlay",
+			Handler:    _OverlayService_GetOverlay_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
